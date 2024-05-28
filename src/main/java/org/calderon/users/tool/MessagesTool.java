@@ -1,27 +1,25 @@
 package org.calderon.users.tool;
 
-import jakarta.annotation.PostConstruct;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
+@NoArgsConstructor
 public class MessagesTool {
-  private static MessageSource mss;
-  private final MessageSource messageSource;
+  protected static MessageSource messageSource;
 
-  public MessagesTool(MessageSource messageSource) {
+  public String getMessage(String key) {
+    return messageSource.getMessage(key, null, LocaleContextHolder.getLocale());
+  }
+  public String getMessage(String key, Object... args) {
+    return messageSource.getMessage(key, args, LocaleContextHolder.getLocale());
+  }
+
+  @Autowired
+  public void setMessageSource(MessageSource messageSource) {
     this.messageSource = messageSource;
-  }
-
-  @PostConstruct
-  public void init() {
-    mss = this.messageSource;
-  }
-  public static String msg(String key) {
-    return mss.getMessage(key, null, LocaleContextHolder.getLocale());
-  }
-  public static String msg(String key, Object... args) {
-    return mss.getMessage(key, args, LocaleContextHolder.getLocale());
   }
 }

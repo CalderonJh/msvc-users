@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-  String createUser(UserDTO userDTO);
+  String create(UserDTO userDTO);
 
   String updateUser(UserDTO userDTO);
 
