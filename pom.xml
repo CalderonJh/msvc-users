@@ -70,8 +70,8 @@
         </dependency>
         <dependency>
             <groupId>dev.jhonc.lib</groupId>
-            <artifactId>demolib</artifactId>
-            <version>2.2.3</version>
+            <artifactId>common</artifactId>
+            <version>3.0</version>
         </dependency>
     </dependencies>
     <dependencyManagement>

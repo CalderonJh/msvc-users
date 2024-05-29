@@ -1,28 +1,31 @@
 package org.calderon.users.service.impl;
 
-import dev.jhonc.lib.demolib.exception.ValidationException;
-import dev.jhonc.lib.demolib.service.MessagesService;
-import java.util.List;
-import java.util.Optional;
+
+import dev.jhonc.lib.common.exception.NoDataException;
+import dev.jhonc.lib.common.exception.ValidationException;
+import dev.jhonc.lib.common.service.Messages;
+import lombok.RequiredArgsConstructor;
 import org.calderon.users.model.User;
-import org.calderon.users.model.dto.UserDTO;
+import org.calderon.users.model.dto.user.UserDTO;
 import org.calderon.users.model.mapper.UserMapper;
 import org.calderon.users.repository.UserRepository;
 import org.calderon.users.service.usecases.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-  private UserRepository userRepository;
-  private MessagesService messagesService;
+  private final UserRepository repository;
+  private final Messages messages;
 
   @Override
   public String create(UserDTO userDTO) {
-    var msg = this.messagesService.msg("user.created", userDTO.getName(), userDTO.getLastName());
     User user = UserMapper.INSTANCE.toUser(userDTO);
     validateDataIntegrity(user);
-    return msg;
+    this.repository.save(user);
+    return this.messages.show("user.created", userDTO.getName(), userDTO.getLastName());
   }
 
   private void validateDataIntegrity(User user) {
@@ -30,38 +33,30 @@ public class UserServiceImpl implements UserService {
   }
 
   void validateEmail(User user) {
-    if (this.userRepository.existsByEmail(user.getEmail())) {
-      throw new ValidationException(this.messagesService.msg("user.email-exists"));
+    if (this.repository.existsByEmail(user.getEmail())) {
+      throw new ValidationException(this.messages.show("user.email-exists"));
     }
   }
 
   @Override
   public String updateUser(UserDTO userDTO) {
-    return"user.updated";
+    return "user.updated";
   }
 
   @Override
   public void deleteUser(Long id) {
-    this.userRepository.deleteById(id);
+    this.repository.deleteById(id);
   }
 
   @Override
-  public Optional<User> getUser(Long id) {
-    return Optional.empty();
+  public User getUser(Long id) {
+    return this.repository
+        .findById(id)
+        .orElseThrow(() -> (new NoDataException(this.messages.show("user.not-found", id))));
   }
 
   @Override
-  public List<User> getUsers() {
-    return List.of();
-  }
-
-  @Autowired
-  public void setUserRepository(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
-
-  @Autowired
-  public void setMessagesService(MessagesService messagesService) {
-    this.messagesService = messagesService;
+  public Page<User> getUsers(Pageable pageable) {
+    return this.repository.findAll(pageable);
   }
 }

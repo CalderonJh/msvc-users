@@ -1,10 +1,9 @@
 package org.calderon.users.service.usecases;
 
 import org.calderon.users.model.User;
-import org.calderon.users.model.dto.UserDTO;
-
-import java.util.List;
-import java.util.Optional;
+import org.calderon.users.model.dto.user.UserDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
   String create(UserDTO userDTO);
@@ -13,7 +12,7 @@ public interface UserService {
 
   void deleteUser(Long id);
 
-  Optional<User> getUser(Long id);
+  User getUser(Long id);
 
-  List<User> getUsers();
+  Page<User> getUsers(Pageable pageable);
 }

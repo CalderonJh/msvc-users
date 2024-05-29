@@ -1,13 +1,18 @@
-package org.calderon.users.model.dto;
+package org.calderon.users.model.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import org.calderon.users.model.dto.AddressDTO;
+
+import java.util.List;
 
 @Data
 @Builder
 public class UserDTO {
+
+  private Long id;
+
   @NotBlank(message = "The name is required")
   private String name;
 
@@ -16,4 +21,6 @@ public class UserDTO {
 
   @NotBlank(message = "The email is required")
   private String email;
+
+  private List<AddressDTO> addresses;
 }

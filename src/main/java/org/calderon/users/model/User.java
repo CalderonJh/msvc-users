@@ -20,14 +20,14 @@ public class User {
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false)
+  @Column(name = "last_name", nullable = false)
   private String lastName;
 
   @Column(unique = true)
   private String email;
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-  @JoinColumn(name = "client_id")
+  @JoinColumn(name = "id_user")
   private List<Address> addresses;
 
   public User() {

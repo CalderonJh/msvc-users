@@ -1,19 +1,21 @@
 package org.calderon.users.controller;
 
-import org.calderon.users.model.dto.UserDTO;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.calderon.users.model.dto.user.UserDTO;
+import org.calderon.users.model.mapper.UserMapper;
 import org.calderon.users.service.usecases.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-
-  private UserService service;
+  private final UserService service;
 
   @GetMapping("/test")
   public ResponseEntity<String> test() {
@@ -27,12 +29,17 @@ public class UserController {
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<String> signup(UserDTO userDTO) {
+  public ResponseEntity<String> signup(@RequestBody @Valid UserDTO userDTO) {
     return ResponseEntity.ok(service.create(userDTO));
   }
 
-  @Autowired
-  public void setUserService(UserService service) {
-    this.service = service;
+  @GetMapping("/all")
+  public ResponseEntity<Page<UserDTO>> getUsers(@PageableDefault Pageable pageable) {
+    return ResponseEntity.ok(service.getUsers(pageable).map(UserMapper.INSTANCE::toUserDTO));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+    return ResponseEntity.ok(UserMapper.INSTANCE.toUserDTO(service.getUser(id)));
   }
 }
