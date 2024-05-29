@@ -7,7 +7,7 @@ import org.calderon.users.model.dto.AddressDTO;
 
 @Data
 @Builder
-public class UserPutDTO {
+public class UserPatchDTO {
 	@NotNull(message = "The id is required for update")
 	private Long id;
 	private String name;

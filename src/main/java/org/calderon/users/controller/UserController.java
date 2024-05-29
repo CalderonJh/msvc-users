@@ -3,6 +3,7 @@ package org.calderon.users.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.calderon.users.model.dto.user.UserDTO;
+import org.calderon.users.model.dto.user.UserPatchDTO;
 import org.calderon.users.model.mapper.UserMapper;
 import org.calderon.users.service.usecases.UserService;
 import org.springframework.data.domain.Page;
@@ -41,5 +42,15 @@ public class UserController {
   @GetMapping("/{id}")
   public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
     return ResponseEntity.ok(UserMapper.INSTANCE.toUserDTO(service.getUser(id)));
+  }
+
+  @PatchMapping("/update")
+  public ResponseEntity<String> updateUser(@RequestBody @Valid UserPatchDTO userDTO) {
+    return ResponseEntity.ok(service.updateUser(userDTO));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+    return ResponseEntity.ok(service.deleteUser(id));
   }
 }
