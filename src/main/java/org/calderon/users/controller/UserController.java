@@ -1,4 +1,4 @@
-package org.calderon.users.controller.rest;
+package org.calderon.users.controller;
 
 import org.calderon.users.model.dto.UserDTO;
 import org.calderon.users.service.usecases.UserService;
@@ -18,7 +18,7 @@ public class UserController {
   @GetMapping("/test")
   public ResponseEntity<String> test() {
     return ResponseEntity.ok(
-        service.updateUser(
+        service.create(
             UserDTO.builder()
                 .name("name t")
                 .lastName("last name t")
