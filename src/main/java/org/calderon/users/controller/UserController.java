@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
   private final UserService service;
 
-  @GetMapping("/test")
-  public ResponseEntity<Object> test() {
-    return ResponseEntity.ok(service.test());
-  }
-
   @PostMapping("/signup")
   public ResponseEntity<UserDTO> signup(@RequestBody @Valid UserDTO userDTO) {
     return ResponseEntity.ok(UserMapper.INSTANCE.toUserDTO(service.create(userDTO)));
+  }
+
+  @GetMapping("/test")
+  public ResponseEntity<Object> test() {
+    return ResponseEntity.ok(service.test());
   }
 
   @GetMapping("/all")
@@ -46,14 +46,24 @@ public class UserController {
     return ResponseEntity.ok(UserMapper.INSTANCE.toUserDTO(service.updateUser(dto)));
   }
 
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
+    return ResponseEntity.ok(service.deleteUser(id));
+  }
+
+  @PostMapping("/create-address")
+  public ResponseEntity<AddressDTO> createAddress(@RequestBody @Valid AddressDTO addressDTO) {
+    return ResponseEntity.ok(
+        AddressMapper.INSTANCE.toAddressDTO(this.service.addAddress(addressDTO)));
+  }
   @PutMapping("/update-address")
   public ResponseEntity<AddressDTO> updateAddress(@RequestBody @Valid AddressPutDTO addressDTO) {
     return ResponseEntity.ok(
         AddressMapper.INSTANCE.toAddressDTO(this.service.updateAddress(addressDTO)));
   }
-
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
-    return ResponseEntity.ok(service.deleteUser(id));
+  @DeleteMapping("/delete-address/{id}")
+  public ResponseEntity<Boolean> deleteAddress(@PathVariable Long id) {
+    return ResponseEntity.ok(service.deleteAddress(id));
   }
+
 }

@@ -11,9 +11,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.calderon.users.model.Address;
 import org.calderon.users.model.User;
+import org.calderon.users.model.dto.address.AddressDTO;
 import org.calderon.users.model.dto.address.AddressPutDTO;
 import org.calderon.users.model.dto.user.UserDTO;
 import org.calderon.users.model.dto.user.UserPutDTO;
+import org.calderon.users.model.mapper.AddressMapper;
 import org.calderon.users.model.mapper.UserMapper;
 import org.calderon.users.repository.AddressRepository;
 import org.calderon.users.repository.UserRepository;
@@ -44,6 +46,18 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public User getUser(Long id) {
+    return repository
+        .findById(id)
+        .orElseThrow(() -> (new NoDataException(messages.get(USER_NOT_FOUND, id))));
+  }
+
+  @Override
+  public Page<User> getUsers(Pageable pageable) {
+    return repository.findAll(pageable);
+  }
+
+  @Override
   @Transactional
   public User updateUser(UserPutDTO dto) {
     User user =
@@ -64,27 +78,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Address updateAddress(AddressPutDTO addressDTO) {
-    Address address =
-        addressRepository
-            .findById(addressDTO.getId())
-            .orElseThrow(
-                () -> (new NoDataException(messages.get(ADDRESS_NOT_FOUND, addressDTO.getId()))));
-    updateAddressValues(address, addressDTO);
-    return addressRepository.save(address);
-  }
-
-  void updateAddressValues(Address addressDB, AddressPutDTO addressDTO) {
-    if (isValidFieldToUpdate(addressDTO.getStreet())) addressDB.setStreet(addressDTO.getStreet());
-    if (isValidFieldToUpdate(addressDTO.getNumber())) addressDB.setNumber(addressDTO.getNumber());
-    if (isValidFieldToUpdate(addressDTO.getCity())) addressDB.setCity(addressDTO.getCity());
-    if (isValidFieldToUpdate(addressDTO.getState())) addressDB.setState(addressDTO.getState());
-    if (isValidFieldToUpdate(addressDTO.getCountry()))
-      addressDB.setCountry(addressDTO.getCountry());
-    if (addressDTO.getDescription() != null) addressDB.setDescription(addressDTO.getDescription());
-  }
-
-  @Override
+  @Transactional
   public boolean deleteUser(Long id) {
     User user =
         repository
@@ -95,15 +89,45 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User getUser(Long id) {
-    return repository
-        .findById(id)
-        .orElseThrow(() -> (new NoDataException(messages.get(USER_NOT_FOUND, id))));
+  @Transactional
+  public Address addAddress(AddressDTO addressDTO) {
+    Address address = AddressMapper.INSTANCE.toAddress(addressDTO);
+    return addressRepository.save(address);
   }
 
   @Override
-  public Page<User> getUsers(Pageable pageable) {
-    return repository.findAll(pageable);
+  @Transactional
+  public Address updateAddress(AddressPutDTO addressDTO) {
+    Address address =
+        addressRepository
+            .findById(addressDTO.getId())
+            .orElseThrow(
+                () -> (new NoDataException(messages.get(ADDRESS_NOT_FOUND, addressDTO.getId()))));
+    updateAddressValues(address, addressDTO);
+    if (addressDTO.isRemoveDescription()) address.setDescription(null);
+    return addressRepository.save(address);
+  }
+
+  void updateAddressValues(Address addressDB, AddressPutDTO addressDTO) {
+    if (isValidFieldToUpdate(addressDTO.getStreet())) addressDB.setStreet(addressDTO.getStreet());
+    if (isValidFieldToUpdate(addressDTO.getNumber())) addressDB.setNumber(addressDTO.getNumber());
+    if (isValidFieldToUpdate(addressDTO.getCity())) addressDB.setCity(addressDTO.getCity());
+    if (isValidFieldToUpdate(addressDTO.getState())) addressDB.setState(addressDTO.getState());
+    if (isValidFieldToUpdate(addressDTO.getCountry()))
+      addressDB.setCountry(addressDTO.getCountry());
+    if (isValidFieldToUpdate(addressDB.getDescription()))
+      addressDB.setDescription(addressDTO.getDescription());
+  }
+
+  @Override
+  @Transactional
+  public boolean deleteAddress(Long id) {
+    Address address =
+        addressRepository
+            .findById(id)
+            .orElseThrow(() -> (new NoDataException(messages.get(ADDRESS_NOT_FOUND, id))));
+    addressRepository.delete(address);
+    return true;
   }
 
   @Override

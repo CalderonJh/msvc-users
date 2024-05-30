@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * Data transfer object to update a user personal information
- * To update an user address, use the AddressPutDTO
+ * Data transfer object to update a user personal information To update an user address, use the
+ * AddressPutDTO
  */
 @Data
 @Builder

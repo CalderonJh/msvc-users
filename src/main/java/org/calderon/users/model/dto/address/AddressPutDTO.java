@@ -13,4 +13,6 @@ public class AddressPutDTO {
   private String state;
   private String country;
   private String description;
+  private boolean removeAll = false;
+  private boolean removeDescription = false;
 }
