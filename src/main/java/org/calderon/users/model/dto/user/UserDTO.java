@@ -3,7 +3,7 @@ package org.calderon.users.model.dto.user;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
-import org.calderon.users.model.dto.AddressDTO;
+import org.calderon.users.model.dto.address.AddressDTO;
 
 import java.util.List;
 

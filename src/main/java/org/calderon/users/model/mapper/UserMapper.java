@@ -1,8 +1,10 @@
 package org.calderon.users.model.mapper;
 
 import org.calderon.users.model.User;
+import org.calderon.users.model.dto.address.AddressDTO;
 import org.calderon.users.model.dto.user.UserDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper

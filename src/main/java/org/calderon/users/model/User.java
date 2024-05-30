@@ -1,15 +1,17 @@
 package org.calderon.users.model;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(name = "users", schema = "users")
 public class User {
@@ -28,9 +30,14 @@ public class User {
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   @JoinColumn(name = "id_user")
-  private List<Address> addresses;
+  private List<Address> addresses = List.of();
 
-  public User() {
-    this.addresses = new ArrayList<>();
+  public void setAddresses(List<Address> addresses) {
+    this.addresses.clear();
+    this.addresses.addAll(addresses);
+  }
+
+  public void addAddress(Address address) {
+    this.addresses.add(address);
   }
 }

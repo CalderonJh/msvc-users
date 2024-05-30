@@ -1,19 +1,28 @@
 package org.calderon.users.service.usecases;
 
+import org.calderon.users.model.Address;
 import org.calderon.users.model.User;
+import org.calderon.users.model.dto.address.AddressDTO;
+import org.calderon.users.model.dto.address.AddressPutDTO;
 import org.calderon.users.model.dto.user.UserDTO;
-import org.calderon.users.model.dto.user.UserPatchDTO;
+import org.calderon.users.model.dto.user.UserPutDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface UserService {
-  String create(UserDTO userDTO);
+  User create(UserDTO userDTO);
 
-  String updateUser(UserPatchDTO userDTO);
+  User updateUser(UserPutDTO userPutDTO);
 
-  String deleteUser(Long id);
+  Address updateAddress(AddressPutDTO addressDTO);
+
+  boolean deleteUser(Long id);
 
   User getUser(Long id);
 
   Page<User> getUsers(Pageable pageable);
+
+  Object test();
 }

@@ -1,9 +1,8 @@
 package org.calderon.users.model.mapper;
 
 import org.calderon.users.model.Address;
-import org.calderon.users.model.dto.AddressDTO;
+import org.calderon.users.model.dto.address.AddressDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper
 public interface AddressMapper {
@@ -11,7 +10,6 @@ public interface AddressMapper {
 
 	AddressDTO toAddressDTO(Address address);
 
-	@Mapping(target = "id", ignore = true)
 	Address toAddress(AddressDTO addressDTO);
 
 }

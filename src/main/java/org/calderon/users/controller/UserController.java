@@ -2,8 +2,11 @@ package org.calderon.users.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.calderon.users.model.dto.address.AddressDTO;
+import org.calderon.users.model.dto.address.AddressPutDTO;
 import org.calderon.users.model.dto.user.UserDTO;
-import org.calderon.users.model.dto.user.UserPatchDTO;
+import org.calderon.users.model.dto.user.UserPutDTO;
+import org.calderon.users.model.mapper.AddressMapper;
 import org.calderon.users.model.mapper.UserMapper;
 import org.calderon.users.service.usecases.UserService;
 import org.springframework.data.domain.Page;
@@ -19,19 +22,13 @@ public class UserController {
   private final UserService service;
 
   @GetMapping("/test")
-  public ResponseEntity<String> test() {
-    return ResponseEntity.ok(
-        service.create(
-            UserDTO.builder()
-                .name("name t")
-                .lastName("last name t")
-                .email("test@email.com")
-                .build()));
+  public ResponseEntity<Object> test() {
+    return ResponseEntity.ok(service.test());
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<String> signup(@RequestBody @Valid UserDTO userDTO) {
-    return ResponseEntity.ok(service.create(userDTO));
+  public ResponseEntity<UserDTO> signup(@RequestBody @Valid UserDTO userDTO) {
+    return ResponseEntity.ok(UserMapper.INSTANCE.toUserDTO(service.create(userDTO)));
   }
 
   @GetMapping("/all")
@@ -44,13 +41,19 @@ public class UserController {
     return ResponseEntity.ok(UserMapper.INSTANCE.toUserDTO(service.getUser(id)));
   }
 
-  @PatchMapping("/update")
-  public ResponseEntity<String> updateUser(@RequestBody @Valid UserPatchDTO userDTO) {
-    return ResponseEntity.ok(service.updateUser(userDTO));
+  @PutMapping("/update")
+  public ResponseEntity<UserDTO> updateUser(@RequestBody UserPutDTO dto) {
+    return ResponseEntity.ok(UserMapper.INSTANCE.toUserDTO(service.updateUser(dto)));
+  }
+
+  @PutMapping("/update-address")
+  public ResponseEntity<AddressDTO> updateAddress(@RequestBody @Valid AddressPutDTO addressDTO) {
+    return ResponseEntity.ok(
+        AddressMapper.INSTANCE.toAddressDTO(this.service.updateAddress(addressDTO)));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+  public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
     return ResponseEntity.ok(service.deleteUser(id));
   }
 }

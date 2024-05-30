@@ -1,4 +1,4 @@
-package org.calderon.users.model.dto;
+package org.calderon.users.model.dto.address;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 @Builder
 public class AddressDTO {
+  private Long id;
+
   @NotBlank(message = "The street is required")
   private String street;
 
