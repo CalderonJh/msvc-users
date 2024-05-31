@@ -1,6 +1,6 @@
 package org.calderon.users.service.impl;
 
-import static org.calderon.users.util.CommonValidations.isValidFieldToUpdate;
+import static dev.jhonc.lib.common.utils.CommonValidations.isValidFieldToUpdate;
 import static org.calderon.users.util.MessagesKeys.*;
 
 import dev.jhonc.lib.common.exception.NoDataException;
@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
   private final UserRepository repository;
   private final AddressRepository addressRepository;
   private final Messages messages;
+  private final UserRepository userRepository;
 
   @Override
   @Transactional
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
             .findById(dto.getId())
             .orElseThrow(() -> (new NoDataException(messages.get(USER_NOT_FOUND, dto.getId()))));
     updateValues(user, dto);
-    return new User();
+    return repository.save(user);
   }
 
   void updateValues(User userDB, UserPutDTO userDTO) {
@@ -90,9 +91,11 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public Address addAddress(AddressDTO addressDTO) {
+  public List<Address> addAddress(Long idUser, AddressDTO addressDTO) {
     Address address = AddressMapper.INSTANCE.toAddress(addressDTO);
-    return addressRepository.save(address);
+    User user = getUser(idUser);
+    user.addAddress(address);
+    return userRepository.save(user).getAddresses();
   }
 
   @Override
@@ -115,7 +118,7 @@ public class UserServiceImpl implements UserService {
     if (isValidFieldToUpdate(addressDTO.getState())) addressDB.setState(addressDTO.getState());
     if (isValidFieldToUpdate(addressDTO.getCountry()))
       addressDB.setCountry(addressDTO.getCountry());
-    if (isValidFieldToUpdate(addressDB.getDescription()))
+    if (isValidFieldToUpdate(addressDTO.getDescription()))
       addressDB.setDescription(addressDTO.getDescription());
   }
 
@@ -128,26 +131,5 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> (new NoDataException(messages.get(ADDRESS_NOT_FOUND, id))));
     addressRepository.delete(address);
     return true;
-  }
-
-  @Override
-  public Object test() {
-    User user =
-        User.builder()
-            .id(1L)
-            .name("Name")
-            .lastName("Last Name")
-            .email("email@test.com")
-            .addresses(
-                List.of(
-                    Address.builder()
-                        .street("street")
-                        .state("state")
-                        .city("city")
-                        .number(1)
-                        .country("country")
-                        .build()))
-            .build();
-    return user.getClass().getFields();
   }
 }

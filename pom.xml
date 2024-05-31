@@ -71,7 +71,7 @@
         <dependency>
             <groupId>dev.jhonc.lib</groupId>
             <artifactId>common</artifactId>
-            <version>3.6-F</version>
+            <version>3.8-F</version>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -100,6 +100,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

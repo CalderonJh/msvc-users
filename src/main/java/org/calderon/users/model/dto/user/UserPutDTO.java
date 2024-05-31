@@ -11,9 +11,8 @@ import lombok.Data;
 @Data
 @Builder
 public class UserPutDTO {
-
   @NotNull(message = "The user id is required to update")
-  private Long id;
+  private long id;
 
   private String name;
 

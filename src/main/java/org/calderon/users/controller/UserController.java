@@ -1,6 +1,7 @@
 package org.calderon.users.controller;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.calderon.users.model.dto.address.AddressDTO;
 import org.calderon.users.model.dto.address.AddressPutDTO;
@@ -26,14 +27,10 @@ public class UserController {
     return ResponseEntity.ok(UserMapper.INSTANCE.toUserDTO(service.create(userDTO)));
   }
 
-  @GetMapping("/test")
-  public ResponseEntity<Object> test() {
-    return ResponseEntity.ok(service.test());
-  }
-
   @GetMapping("/all")
   public ResponseEntity<Page<UserDTO>> getUsers(@PageableDefault Pageable pageable) {
-    return ResponseEntity.ok(service.getUsers(pageable).map(UserMapper.INSTANCE::toUserDTO));
+    Page<UserDTO> page = service.getUsers(pageable).map(UserMapper.INSTANCE::toUserDTO);
+    return ResponseEntity.ok(page);
   }
 
   @GetMapping("/{id}")
@@ -46,24 +43,28 @@ public class UserController {
     return ResponseEntity.ok(UserMapper.INSTANCE.toUserDTO(service.updateUser(dto)));
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/remove/{id}")
   public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
     return ResponseEntity.ok(service.deleteUser(id));
   }
 
-  @PostMapping("/create-address")
-  public ResponseEntity<AddressDTO> createAddress(@RequestBody @Valid AddressDTO addressDTO) {
+  @PostMapping("{idUser}/create-address")
+  public ResponseEntity<List<AddressDTO>> createAddress(
+      @PathVariable Long idUser, @RequestBody @Valid AddressDTO addressDTO) {
     return ResponseEntity.ok(
-        AddressMapper.INSTANCE.toAddressDTO(this.service.addAddress(addressDTO)));
+        this.service.addAddress(idUser, addressDTO).stream()
+            .map(AddressMapper.INSTANCE::toAddressDTO)
+            .toList());
   }
+
   @PutMapping("/update-address")
   public ResponseEntity<AddressDTO> updateAddress(@RequestBody @Valid AddressPutDTO addressDTO) {
     return ResponseEntity.ok(
         AddressMapper.INSTANCE.toAddressDTO(this.service.updateAddress(addressDTO)));
   }
+
   @DeleteMapping("/delete-address/{id}")
   public ResponseEntity<Boolean> deleteAddress(@PathVariable Long id) {
     return ResponseEntity.ok(service.deleteAddress(id));
   }
-
 }

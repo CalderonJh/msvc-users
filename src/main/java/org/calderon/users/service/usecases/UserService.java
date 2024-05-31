@@ -9,6 +9,8 @@ import org.calderon.users.model.dto.user.UserPutDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface UserService {
   User create(UserDTO userDTO);
 
@@ -16,7 +18,7 @@ public interface UserService {
 
   Address updateAddress(AddressPutDTO addressDTO);
 
-  Address addAddress(AddressDTO addressDTO);
+  List<Address> addAddress(Long idUser, AddressDTO addressDTO);
 
   boolean deleteAddress(Long id);
 
@@ -25,6 +27,4 @@ public interface UserService {
   User getUser(Long id);
 
   Page<User> getUsers(Pageable pageable);
-
-  Object test();
 }

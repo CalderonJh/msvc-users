@@ -14,7 +14,7 @@ public class AddressDTO {
   private String street;
 
   @NotNull(message = "The number is required")
-  private int number;
+  private Integer number;
 
   @NotBlank(message = "The city is required")
   private String city;
