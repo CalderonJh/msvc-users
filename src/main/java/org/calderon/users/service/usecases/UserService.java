@@ -1,7 +1,7 @@
 package org.calderon.users.service.usecases;
 
-import org.calderon.users.model.Address;
-import org.calderon.users.model.User;
+import org.calderon.users.model.entity.Address;
+import org.calderon.users.model.entity.User;
 import org.calderon.users.model.dto.address.AddressDTO;
 import org.calderon.users.model.dto.address.AddressPutDTO;
 import org.calderon.users.model.dto.user.UserDTO;
@@ -27,4 +27,5 @@ public interface UserService {
   User getUser(Long id);
 
   Page<User> getUsers(Pageable pageable);
+  User buyCourse(Long idUser, String idCourse);
 }

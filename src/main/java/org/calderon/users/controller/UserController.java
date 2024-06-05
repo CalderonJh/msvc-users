@@ -67,4 +67,9 @@ public class UserController {
   public ResponseEntity<Boolean> deleteAddress(@PathVariable Long id) {
     return ResponseEntity.ok(service.deleteAddress(id));
   }
+
+  @PostMapping("/{idUser}/buy-course")
+  public ResponseEntity<?> buyCourse(@PathVariable Long idUser, @RequestParam String idCourse) {
+    return ResponseEntity.ok(service.buyCourse(idUser, idCourse));
+  }
 }

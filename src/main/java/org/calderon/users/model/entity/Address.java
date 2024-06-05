@@ -1,4 +1,4 @@
-package org.calderon.users.model;
+package org.calderon.users.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

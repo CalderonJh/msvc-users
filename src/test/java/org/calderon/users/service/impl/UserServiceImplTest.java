@@ -9,8 +9,8 @@ import dev.jhonc.lib.common.exception.ValidationException;
 import dev.jhonc.lib.common.service.Messages;
 
 import java.util.Optional;
-import org.calderon.users.model.Address;
-import org.calderon.users.model.User;
+import org.calderon.users.model.entity.Address;
+import org.calderon.users.model.entity.User;
 import org.calderon.users.model.dto.address.AddressDTO;
 import org.calderon.users.model.dto.address.AddressPutDTO;
 import org.calderon.users.model.dto.user.UserDTO;

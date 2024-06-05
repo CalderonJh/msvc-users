@@ -6,18 +6,23 @@ import static org.calderon.users.util.MessagesKeys.*;
 import dev.jhonc.lib.common.exception.NoDataException;
 import dev.jhonc.lib.common.exception.ValidationException;
 import dev.jhonc.lib.common.service.Messages;
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.calderon.users.model.Address;
-import org.calderon.users.model.User;
+import org.calderon.users.client.CourseClientRest;
+import org.calderon.users.model.Course;
 import org.calderon.users.model.dto.address.AddressDTO;
 import org.calderon.users.model.dto.address.AddressPutDTO;
 import org.calderon.users.model.dto.user.UserDTO;
 import org.calderon.users.model.dto.user.UserPutDTO;
+import org.calderon.users.model.entity.Address;
+import org.calderon.users.model.entity.User;
+import org.calderon.users.model.entity.UserCourse;
 import org.calderon.users.model.mapper.AddressMapper;
 import org.calderon.users.model.mapper.UserMapper;
 import org.calderon.users.repository.AddressRepository;
+import org.calderon.users.repository.UserCourseRepository;
 import org.calderon.users.repository.UserRepository;
 import org.calderon.users.service.usecases.UserService;
 import org.springframework.data.domain.Page;
@@ -31,6 +36,8 @@ public class UserServiceImpl implements UserService {
   private final AddressRepository addressRepository;
   private final Messages messages;
   private final UserRepository userRepository;
+  private final CourseClientRest client;
+  private final UserCourseRepository userCourseRepository;
 
   @Override
   @Transactional
@@ -131,5 +138,22 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> (new NoDataException(messages.get(ADDRESS_NOT_FOUND, id))));
     addressRepository.delete(address);
     return true;
+  }
+
+  @Override
+  public User buyCourse(Long idUser, String idCourse) {
+    Course course;
+    try {
+      course = client.buyCourse(idCourse);
+    } catch (FeignException e) {
+//      throw new ValidationException(messages.get(COURSE_NOT_FOUND, idCourse));
+      throw new ValidationException(e.getMessage());
+
+    }
+    var user = getUser(idUser);
+    var userCourse = UserCourse.builder().idCourse(course.getId()).user(user).build();
+    userCourseRepository.save(userCourse);
+    user.addCourse(course);
+    return user;
   }
 }

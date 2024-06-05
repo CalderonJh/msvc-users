@@ -1,6 +1,6 @@
 package org.calderon.users.model.mapper;
 
-import org.calderon.users.model.Address;
+import org.calderon.users.model.entity.Address;
 import org.calderon.users.model.dto.address.AddressDTO;
 import org.mapstruct.Mapper;
 

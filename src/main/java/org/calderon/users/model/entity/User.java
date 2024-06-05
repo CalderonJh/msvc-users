@@ -1,4 +1,4 @@
-package org.calderon.users.model;
+package org.calderon.users.model.entity;
 
 import jakarta.persistence.*;
 
@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.calderon.users.model.Course;
 
 @Entity
 @Data
@@ -32,8 +33,11 @@ public class User {
   @JoinColumn(name = "id_user")
   private List<Address> addresses;
 
+  @Transient private List<Course> courses;
+
   public User() {
     this.addresses = new ArrayList<>();
+    this.courses = new ArrayList<>();
   }
 
   public void addAddress(Address address) {
@@ -45,5 +49,16 @@ public class User {
       addresses = new ArrayList<>();
     }
     return addresses;
+  }
+
+  public List<Course> getCourses() {
+    if (courses == null) {
+      courses = new ArrayList<>();
+    }
+    return courses;
+  }
+
+  public void addCourse(Course course) {
+    this.getCourses().add(course);
   }
 }
